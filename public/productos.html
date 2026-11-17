@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Productos · Inventa</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/productos.css">
+  <!-- Sin sesión no se muestra nada: se redirige antes de pintar la página -->
+  <script src="/js/api.js"></script>
+  <script src="/js/guardia.js"></script>
+</head>
+<body>
+  <header class="barra">
+    <div class="barra-interior">
+      <a class="logo-fila" href="/productos">
+        <img src="/img/logo.svg" alt="" width="32" height="32">
+        <span>Inventa</span>
+      </a>
+      <div class="usuario">
+        <div class="usuario-datos">
+          <span id="usuario-nombre" class="usuario-nombre"></span>
+          <span id="usuario-rol" class="chip"></span>
+        </div>
+        <button id="btn-salir" class="btn btn-secundario" type="button">Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <div class="encabezado">
+      <div>
+        <h1>Productos</h1>
+        <p class="subtitulo">Administra el catálogo y el inventario disponible.</p>
+      </div>
+      <button id="btn-nuevo" class="btn btn-primario" type="button">
+        <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Nuevo producto
+      </button>
+    </div>
+
+    <section class="metricas" aria-label="Resumen del inventario">
+      <article class="metrica"><span>Productos</span><strong id="m-productos">–</strong></article>
+      <article class="metrica"><span>Unidades en stock</span><strong id="m-unidades">–</strong></article>
+      <article class="metrica"><span>Valor del inventario</span><strong id="m-valor">–</strong></article>
+      <article class="metrica"><span>Sin existencias</span><strong id="m-sin-stock">–</strong></article>
+    </section>
+
+    <section class="tabla-tarjeta">
+      <form id="filtros" class="filtros" role="search">
+        <label class="oculto-visual" for="f-buscar">Buscar</label>
+        <input class="control buscar" id="f-buscar" name="buscar" type="search" placeholder="Buscar por nombre, SKU o descripción" maxlength="60">
+        <label class="oculto-visual" for="f-categoria">Categoría</label>
+        <select class="control" id="f-categoria" name="categoria">
+          <option value="">Todas las categorías</option>
+        </select>
+        <label class="oculto-visual" for="f-orden">Ordenar por</label>
+        <select class="control" id="f-orden" name="orden">
+          <option value="recientes">Más recientes</option>
+          <option value="nombre">Nombre (A-Z)</option>
+          <option value="precio-asc">Precio: menor a mayor</option>
+          <option value="precio-desc">Precio: mayor a menor</option>
+          <option value="stock">Menor stock</option>
+        </select>
+      </form>
+
+      <div class="tabla-envoltura">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Producto</th>
+              <th scope="col">Categoría</th>
+              <th scope="col" class="num">Precio</th>
+              <th scope="col" class="num">Stock</th>
+              <th scope="col">Registró</th>
+              <th scope="col"><span class="oculto-visual">Acciones</span></th>
+            </tr>
+          </thead>
+          <tbody id="filas"></tbody>
+        </table>
+        <div id="vacio" class="vacio" hidden>
+          <strong>No hay productos para mostrar</strong>
+          <span id="vacio-texto">Agrega el primero con “Nuevo producto”.</span>
+        </div>
+      </div>
+
+      <nav class="paginacion" aria-label="Paginación">
+        <span id="pag-info"></span>
+        <div>
+          <button id="pag-anterior" class="btn btn-secundario" type="button">Anterior</button>
+          <button id="pag-siguiente" class="btn btn-secundario" type="button">Siguiente</button>
+        </div>
+      </nav>
+    </section>
+  </main>
+
+  <!-- Formulario de alta y edición -->
+  <dialog id="dlg-producto" class="dialogo" aria-labelledby="dlg-titulo">
+    <form id="form-producto" method="dialog" novalidate>
+      <header class="dialogo-cabecera">
+        <h2 id="dlg-titulo">Nuevo producto</h2>
+        <button class="btn btn-icono" type="button" data-cerrar aria-label="Cerrar">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+
+      <div id="form-mensaje" class="alerta alerta-error" role="alert"></div>
+
+      <div class="rejilla">
+        <div class="campo span-2">
+          <label for="p-nombre">Nombre *</label>
+          <input class="control" id="p-nombre" name="nombre" required minlength="2" maxlength="100">
+          <span class="error-campo" id="p-nombre-error"></span>
+        </div>
+        <div class="campo">
+          <label for="p-sku">SKU *</label>
+          <input class="control" id="p-sku" name="sku" required maxlength="20" placeholder="ELE-001" autocapitalize="characters">
+          <span class="error-campo" id="p-sku-error"></span>
+        </div>
+        <div class="campo">
+          <label for="p-categoria">Categoría</label>
+          <select class="control" id="p-categoria" name="categoria"></select>
+          <span class="error-campo" id="p-categoria-error"></span>
+        </div>
+        <div class="campo">
+          <label for="p-precio">Precio (MXN) *</label>
+          <input class="control" id="p-precio" name="precio" type="number" min="0" step="0.01" required inputmode="decimal">
+          <span class="error-campo" id="p-precio-error"></span>
+        </div>
+        <div class="campo">
+          <label for="p-stock">Stock</label>
+          <input class="control" id="p-stock" name="stock" type="number" min="0" step="1" value="0" inputmode="numeric">
+          <span class="error-campo" id="p-stock-error"></span>
+        </div>
+        <div class="campo span-2">
+          <label for="p-descripcion">Descripción</label>
+          <textarea class="control" id="p-descripcion" name="descripcion" maxlength="500" rows="3"></textarea>
+          <span class="error-campo" id="p-descripcion-error"></span>
+        </div>
+      </div>
+
+      <footer class="dialogo-pie">
+        <button class="btn btn-secundario" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn-primario" type="submit" id="btn-guardar">Guardar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Confirmación de borrado -->
+  <dialog id="dlg-eliminar" class="dialogo dialogo-chico" aria-labelledby="dlg-eliminar-titulo">
+    <form method="dialog">
+      <h2 id="dlg-eliminar-titulo">¿Eliminar producto?</h2>
+      <p>Se eliminará <strong id="eliminar-nombre"></strong>. Esta acción no se puede deshacer.</p>
+      <footer class="dialogo-pie">
+        <button class="btn btn-secundario" value="cancelar">Cancelar</button>
+        <button class="btn btn-peligro" value="confirmar" id="btn-confirmar-eliminar">Eliminar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="/js/productos.js"></script>
+</body>
+</html>

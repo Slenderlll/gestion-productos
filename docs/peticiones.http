@@ -1,0 +1,56 @@
+### Peticiones de ejemplo (extensión REST Client de VS Code)
+@base = http://localhost:3000
+@token = pega-aqui-el-token
+
+### Salud
+GET {{base}}/api/salud
+
+### Registro
+POST {{base}}/api/auth/registro
+Content-Type: application/json
+
+{ "nombre": "Ana López", "correo": "ana@correo.mx", "password": "Secreta123" }
+
+### Login
+POST {{base}}/api/auth/login
+Content-Type: application/json
+
+{ "correo": "ana@correo.mx", "password": "Secreta123" }
+
+### Perfil
+GET {{base}}/api/auth/perfil
+Authorization: Bearer {{token}}
+
+### Listar productos (búsqueda, filtro, orden y paginación)
+GET {{base}}/api/productos?buscar=café&categoria=Alimentos&orden=precio-asc&pagina=1&limite=10
+Authorization: Bearer {{token}}
+
+### Resumen del inventario
+GET {{base}}/api/productos/resumen
+Authorization: Bearer {{token}}
+
+### Crear producto
+POST {{base}}/api/productos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "nombre": "Taza de cerámica", "sku": "HOG-001", "precio": 129.9, "stock": 12, "categoria": "Hogar", "descripcion": "350 ml" }
+
+### Obtener un producto
+GET {{base}}/api/productos/ID_DEL_PRODUCTO
+Authorization: Bearer {{token}}
+
+### Actualizar (parcial)
+PUT {{base}}/api/productos/ID_DEL_PRODUCTO
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "precio": 99.5, "stock": 20 }
+
+### Eliminar
+DELETE {{base}}/api/productos/ID_DEL_PRODUCTO
+Authorization: Bearer {{token}}
+
+### Cerrar sesión (el token deja de servir)
+POST {{base}}/api/auth/logout
+Authorization: Bearer {{token}}

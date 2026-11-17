@@ -1,0 +1,123 @@
+# Pipeline de integración y despliegue continuos
+#
+# 1. "pruebas": en cada push y pull request instala dependencias y corre Jest con cobertura.
+# 2. "desplegar": solo en push a main y si las pruebas pasaron, construye y publica en
+#    Vercel (producción) con la CLI, y luego verifica que /api/salud responda.
+#
+# Secretos requeridos en GitHub (Settings > Secrets and variables > Actions):
+#   VERCEL_TOKEN       token personal de Vercel
+#   VERCEL_ORG_ID      id del equipo/cuenta (archivo .vercel/project.json tras "vercel link")
+#   VERCEL_PROJECT_ID  id del proyecto  (mismo archivo)
+# Las variables de la aplicación (MONGODB_URI, JWT_SECRET...) viven en Vercel, no aquí.
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas:
+    name: Pruebas (Jest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Reutilizar el binario de MongoDB para las pruebas
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-binaries-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm run test:ci
+
+      - name: Guardar reporte de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: coverage/
+          retention-days: 14
+
+  desplegar:
+    name: Desplegar en Vercel
+    needs: pruebas
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: produccion
+      url: ${{ steps.despliegue.outputs.url }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verificar secretos
+        run: |
+          for s in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!s}" ]; then
+              echo "::error::Falta el secreto $s. Agrégalo en Settings > Secrets and variables > Actions."
+              exit 1
+            fi
+          done
+
+      - name: Instalar la CLI de Vercel
+        run: npm install --global vercel@65.17.0
+
+      - name: Descargar la configuración del proyecto
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Construir
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Publicar en producción
+        id: despliegue
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Desplegado en $url"
+
+      - name: Prueba de humo (/api/salud)
+        env:
+          URL_PROD: ${{ vars.URL_PRODUCCION }}
+        run: |
+          url="${URL_PROD:-${{ steps.despliegue.outputs.url }}}"
+          for intento in 1 2 3 4 5; do
+            codigo=$(curl -s -o salud.json -w '%{http_code}' "$url/api/salud" || true)
+            echo "Intento $intento: HTTP $codigo $(cat salud.json 2>/dev/null)"
+            [ "$codigo" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::error::La aplicación no respondió 200 en $url/api/salud"
+          exit 1

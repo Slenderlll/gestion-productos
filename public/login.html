@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · Inventa</title>
+  <meta name="description" content="Accede al sistema de gestión de productos Inventa.">
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+  <main class="acceso">
+    <section class="marca" aria-hidden="true">
+      <div class="marca-contenido">
+        <div class="logo-fila">
+          <img src="/img/logo.svg" alt="" width="44" height="44">
+          <span>Inventa</span>
+        </div>
+        <h2>Tu inventario, ordenado y seguro.</h2>
+        <p>Registra, edita y consulta tus productos desde cualquier lugar. Cada acción queda protegida con tu sesión.</p>
+        <ul class="beneficios">
+          <li>Altas, cambios y bajas de productos en segundos</li>
+          <li>Búsqueda por nombre, SKU o categoría</li>
+          <li>Acceso protegido con JSON Web Tokens</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="tarjeta">
+        <div class="logo-fila logo-movil">
+          <img src="/img/logo.svg" alt="" width="36" height="36">
+          <span>Inventa</span>
+        </div>
+
+        <div class="pestanas" role="tablist" aria-label="Acceso">
+          <button type="button" role="tab" id="tab-login" aria-controls="form-login" aria-selected="true">Iniciar sesión</button>
+          <button type="button" role="tab" id="tab-registro" aria-controls="form-registro" aria-selected="false" tabindex="-1">Crear cuenta</button>
+        </div>
+
+        <div id="mensaje" class="alerta" role="status" aria-live="polite"></div>
+
+        <form id="form-login" role="tabpanel" aria-labelledby="tab-login" novalidate>
+          <h1>Bienvenido de nuevo</h1>
+          <p class="subtitulo">Ingresa con tu correo y contraseña.</p>
+
+          <div class="campo">
+            <label for="login-correo">Correo electrónico</label>
+            <input class="control" id="login-correo" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+            <span class="error-campo" id="login-correo-error"></span>
+          </div>
+
+          <div class="campo">
+            <label for="login-password">Contraseña</label>
+            <div class="con-boton">
+              <input class="control" id="login-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+              <button type="button" class="ver-password" aria-label="Mostrar contraseña" data-para="login-password">Ver</button>
+            </div>
+            <span class="error-campo" id="login-password-error"></span>
+          </div>
+
+          <button class="btn btn-primario btn-bloque" type="submit">Iniciar sesión</button>
+          <p class="cambio">¿No tienes cuenta? <a href="#registro" data-ir="registro">Crea una</a></p>
+        </form>
+
+        <form id="form-registro" role="tabpanel" aria-labelledby="tab-registro" novalidate hidden>
+          <h1>Crea tu cuenta</h1>
+          <p class="subtitulo">Solo toma un minuto.</p>
+
+          <div class="campo">
+            <label for="registro-nombre">Nombre</label>
+            <input class="control" id="registro-nombre" name="nombre" autocomplete="name" placeholder="Tu nombre" required minlength="2" maxlength="60">
+            <span class="error-campo" id="registro-nombre-error"></span>
+          </div>
+
+          <div class="campo">
+            <label for="registro-correo">Correo electrónico</label>
+            <input class="control" id="registro-correo" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+            <span class="error-campo" id="registro-correo-error"></span>
+          </div>
+
+          <div class="campo">
+            <label for="registro-password">Contraseña</label>
+            <div class="con-boton">
+              <input class="control" id="registro-password" name="password" type="password" autocomplete="new-password" placeholder="Mínimo 8 caracteres" required minlength="8" maxlength="72">
+              <button type="button" class="ver-password" aria-label="Mostrar contraseña" data-para="registro-password">Ver</button>
+            </div>
+            <span class="ayuda">Al menos 8 caracteres, con una letra y un número.</span>
+            <span class="error-campo" id="registro-password-error"></span>
+          </div>
+
+          <button class="btn btn-primario btn-bloque" type="submit">Crear cuenta</button>
+          <p class="cambio">¿Ya tienes cuenta? <a href="#login" data-ir="login">Inicia sesión</a></p>
+        </form>
+      </div>
+      <p class="pie">Actividad 4 · Desarrollo Full Stack</p>
+    </section>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/login.js"></script>
+</body>
+</html>

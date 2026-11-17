@@ -1,0 +1,36 @@
+{
+  "name": "gestion-productos",
+  "version": "1.0.0",
+  "description": "Aplicación web para gestionar productos: API REST con Node.js, Express, MongoDB (Mongoose) y autenticación JWT, con vistas estáticas en HTML.",
+  "main": "src/server.js",
+  "private": true,
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:local": "node scripts/db-local.js",
+    "seed": "node scripts/seed.js",
+    "test": "jest",
+    "test:ci": "jest --ci --coverage"
+  },
+  "author": "Gino Farrugia",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.4",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.12.2"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "mongodb-memory-server": "^11.3.0",
+    "supertest": "^7.3.2"
+  }
+}

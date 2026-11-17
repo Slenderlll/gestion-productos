@@ -1,0 +1,159 @@
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--superficie) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--borde);
+}
+.barra-interior {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.logo-fila { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--texto); text-decoration: none; }
+
+.usuario { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.usuario-datos { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.usuario-nombre { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--primario-suave);
+  color: var(--primario);
+  white-space: nowrap;
+}
+.chip-admin { background: var(--aviso-suave); color: var(--aviso); }
+
+.contenido { max-width: 1200px; margin: 0 auto; padding: 28px 16px 64px; display: grid; gap: 22px; }
+
+.encabezado { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.encabezado h1 { font-size: 28px; letter-spacing: -.02em; }
+.subtitulo { margin: 4px 0 0; color: var(--texto-suave); }
+
+/* Métricas */
+.metricas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.metrica {
+  padding: 16px 18px;
+  border-radius: var(--radio);
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  box-shadow: var(--sombra);
+  display: grid;
+  gap: 4px;
+}
+.metrica span { color: var(--texto-suave); font-size: 13px; font-weight: 500; }
+.metrica strong { font-size: 24px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+
+/* Tabla */
+.tabla-tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+.filtros {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 210px 210px;
+  gap: 10px;
+  padding: 14px;
+  border-bottom: 1px solid var(--borde);
+}
+
+.tabla-envoltura { overflow-x: auto; }
+.tabla { width: 100%; border-collapse: collapse; }
+.tabla th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--texto-suave);
+  background: var(--superficie-2);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--borde);
+}
+.tabla td { padding: 12px 14px; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+.tabla tbody tr:hover { background: var(--superficie-2); }
+.tabla .num { text-align: right; font-variant-numeric: tabular-nums; }
+.producto-nombre { font-weight: 600; }
+.producto-sku { font-size: 12.5px; color: var(--texto-suave); font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.producto-desc { font-size: 13px; color: var(--texto-suave); max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.autor { color: var(--texto-suave); font-size: 13.5px; }
+
+.stock { display: inline-block; min-width: 42px; padding: 2px 10px; border-radius: 999px; font-weight: 600; font-size: 13px; text-align: center; }
+.stock-ok { background: var(--exito-suave); color: var(--exito); }
+.stock-bajo { background: var(--aviso-suave); color: var(--aviso); }
+.stock-cero { background: var(--peligro-suave); color: var(--peligro); }
+
+.acciones { display: flex; gap: 6px; justify-content: flex-end; }
+.acciones .btn-icono:disabled { visibility: hidden; }
+.acciones .eliminar:hover:not(:disabled) { color: var(--peligro); border-color: color-mix(in srgb, var(--peligro) 40%, transparent); }
+
+.vacio { display: grid; gap: 4px; place-items: center; padding: 48px 16px; text-align: center; color: var(--texto-suave); }
+.vacio strong { color: var(--texto); }
+
+.fila-cargando td { padding: 0; }
+.esqueleto { height: 54px; background: linear-gradient(90deg, var(--superficie-2), var(--borde), var(--superficie-2)); background-size: 200% 100%; animation: brillo 1.2s infinite; border-bottom: 1px solid var(--borde); }
+@keyframes brillo { to { background-position: -200% 0; } }
+
+.paginacion { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; color: var(--texto-suave); font-size: 14px; }
+.paginacion div { display: flex; gap: 8px; }
+.paginacion .btn { padding: 7px 12px; }
+
+/* Diálogos */
+.dialogo {
+  width: min(620px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra-alta);
+}
+.dialogo::backdrop { background: rgb(15 19 32 / 55%); backdrop-filter: blur(2px); }
+.dialogo form { display: grid; gap: 16px; padding: 22px; }
+.dialogo-chico { width: min(420px, calc(100vw - 32px)); }
+.dialogo-chico p { margin: 0; color: var(--texto-suave); }
+.dialogo-cabecera { display: flex; align-items: center; justify-content: space-between; }
+.dialogo-cabecera h2, .dialogo-chico h2 { font-size: 20px; }
+.dialogo-pie { display: flex; justify-content: flex-end; gap: 10px; }
+.rejilla { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.span-2 { grid-column: span 2; }
+
+/* Responsivo: en pantallas chicas la tabla se vuelve tarjetas */
+@media (max-width: 900px) {
+  .metricas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .filtros { grid-template-columns: 1fr 1fr; }
+  .filtros .buscar { grid-column: span 2; }
+}
+@media (max-width: 640px) {
+  .usuario-datos .chip { display: none; }
+  .usuario-nombre { max-width: 34vw; }
+  .encabezado .btn { width: 100%; }
+  .metrica strong { font-size: 20px; }
+  .rejilla { grid-template-columns: 1fr; }
+  .span-2 { grid-column: auto; }
+
+  .tabla thead { display: none; }
+  .tabla, .tabla tbody, .tabla tr, .tabla td { display: block; width: 100%; }
+  .tabla tr { padding: 12px 14px; border-bottom: 1px solid var(--borde); display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
+  .tabla td { padding: 0; border: 0; }
+  .tabla td.celda-producto { grid-column: 1 / -1; }
+  .tabla td.num { text-align: left; }
+  .tabla td[data-etiqueta]::before { content: attr(data-etiqueta) ": "; color: var(--texto-suave); font-size: 13px; }
+  .tabla td.celda-acciones { grid-column: 1 / -1; }
+  .acciones { justify-content: flex-start; }
+  .producto-desc { max-width: 100%; }
+  .fila-cargando { display: block !important; padding: 0 !important; }
+}

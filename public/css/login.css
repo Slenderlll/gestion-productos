@@ -1,0 +1,117 @@
+.acceso {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+}
+
+/* Panel de marca */
+.marca {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 48px clamp(32px, 6vw, 80px);
+  color: #fff;
+  background:
+    radial-gradient(circle at 15% 20%, rgb(255 255 255 / 14%) 0 2px, transparent 3px) 0 0 / 28px 28px,
+    linear-gradient(140deg, #312e81 0%, #4338ca 45%, #0f766e 100%);
+}
+.marca::after {
+  content: "";
+  position: absolute;
+  width: 520px; height: 520px;
+  right: -180px; bottom: -200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(52 211 153 / 35%), transparent 65%);
+}
+.marca-contenido { position: relative; z-index: 1; max-width: 460px; }
+.marca h2 { font-size: clamp(28px, 3.2vw, 40px); font-weight: 700; margin: 36px 0 16px; letter-spacing: -.02em; }
+.marca p { color: rgb(255 255 255 / 82%); font-size: 16px; margin: 0 0 28px; }
+
+.beneficios { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.beneficios li {
+  display: flex; align-items: center; gap: 12px;
+  color: rgb(255 255 255 / 92%);
+}
+.beneficios li::before {
+  content: "✓";
+  display: grid; place-items: center;
+  flex: none;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 16%);
+  font-size: 13px; font-weight: 700;
+}
+
+.logo-fila { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 20px; }
+
+/* Panel del formulario */
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px 24px;
+}
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: 18px;
+}
+.logo-movil { display: none; }
+
+.pestanas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borde);
+}
+.pestanas button {
+  padding: 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--texto-suave);
+  font-weight: 600;
+  cursor: pointer;
+}
+.pestanas button[aria-selected="true"] {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra);
+}
+
+form { display: grid; gap: 16px; }
+form h1 { font-size: 26px; letter-spacing: -.01em; }
+.subtitulo { margin: -10px 0 4px; color: var(--texto-suave); }
+
+.con-boton { position: relative; }
+.con-boton .control { padding-right: 64px; }
+.ver-password {
+  position: absolute;
+  right: 6px; top: 50%;
+  transform: translateY(-50%);
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--primario);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ver-password:hover { background: var(--primario-suave); }
+
+.cambio { margin: 0; text-align: center; color: var(--texto-suave); font-size: 14px; }
+.pie { margin: 32px 0 0; color: var(--texto-suave); font-size: 12.5px; }
+
+@media (max-width: 860px) {
+  .acceso { grid-template-columns: 1fr; }
+  .marca { display: none; }
+  .logo-movil { display: flex; justify-content: center; margin-bottom: 4px; }
+  .panel { justify-content: flex-start; padding-top: 48px; }
+}
