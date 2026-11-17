@@ -139,6 +139,7 @@
 }
 @media (max-width: 640px) {
   .usuario-datos .chip { display: none; }
+  .filtros select { font-size: 14px; padding-inline: 8px; }
   .usuario-nombre { max-width: 34vw; }
   .encabezado .btn { width: 100%; }
   .metrica strong { font-size: 20px; }

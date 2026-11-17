@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 640" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="1100" height="640" fill="#ffffff"/>
+  <text x="550" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#1b2236">Diagrama entidad-relación · Base de datos gestion_productos (MongoDB)</text>
+  <text x="550" y="64" text-anchor="middle" font-size="14" fill="#5b6478">Notación pata de gallo · PK = llave primaria (_id) · FK = referencia (ObjectId) · UQ = índice único</text>
+
+  <!-- USUARIO -->
+  <g transform="translate(40,110)">
+    <rect width="330" height="270" rx="10" fill="#ffffff" stroke="#4338ca" stroke-width="2"/>
+    <rect width="330" height="44" rx="10" fill="#4338ca"/>
+    <rect y="30" width="330" height="14" fill="#4338ca"/>
+    <text x="165" y="29" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">USUARIO  (colección usuarios)</text>
+    <g font-size="14" fill="#1b2236">
+      <text x="14" y="72"><tspan font-weight="700" fill="#4338ca">PK</tspan>  _id : ObjectId</text>
+      <text x="14" y="100">nombre : String  (2-60, requerido)</text>
+      <text x="14" y="128"><tspan font-weight="700" fill="#0f9d8a">UQ</tspan>  correo : String  (minúsculas)</text>
+      <text x="14" y="156">password : String  (hash bcrypt, oculto)</text>
+      <text x="14" y="184">rol : String  {usuario | admin}</text>
+      <text x="14" y="212">createdAt : Date</text>
+      <text x="14" y="240">updatedAt : Date</text>
+    </g>
+  </g>
+
+  <!-- PRODUCTO -->
+  <g transform="translate(730,90)">
+    <rect width="330" height="354" rx="10" fill="#ffffff" stroke="#0f766e" stroke-width="2"/>
+    <rect width="330" height="44" rx="10" fill="#0f766e"/>
+    <rect y="30" width="330" height="14" fill="#0f766e"/>
+    <text x="165" y="29" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">PRODUCTO  (colección productos)</text>
+    <g font-size="14" fill="#1b2236">
+      <text x="14" y="72"><tspan font-weight="700" fill="#4338ca">PK</tspan>  _id : ObjectId</text>
+      <text x="14" y="100">nombre : String  (2-100, requerido)</text>
+      <text x="14" y="128"><tspan font-weight="700" fill="#0f9d8a">UQ</tspan>  sku : String  (mayúsculas)</text>
+      <text x="14" y="156">descripcion : String  (máx. 500)</text>
+      <text x="14" y="184">precio : Number  (≥ 0, requerido)</text>
+      <text x="14" y="212">stock : Number  (entero ≥ 0)</text>
+      <text x="14" y="240">categoria : String  (enum, 6 valores)</text>
+      <text x="14" y="268"><tspan font-weight="700" fill="#d23c3c">FK</tspan>  creadoPor : ObjectId → Usuario</text>
+      <text x="14" y="296">createdAt : Date</text>
+      <text x="14" y="324">updatedAt : Date</text>
+    </g>
+  </g>
+
+  <!-- TOKEN_REVOCADO -->
+  <g transform="translate(40,450)">
+    <rect width="330" height="160" rx="10" fill="#ffffff" stroke="#b7791f" stroke-width="2"/>
+    <rect width="330" height="44" rx="10" fill="#b7791f"/>
+    <rect y="30" width="330" height="14" fill="#b7791f"/>
+    <text x="165" y="29" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">TOKEN_REVOCADO  (tokenrevocados)</text>
+    <g font-size="14" fill="#1b2236">
+      <text x="14" y="72"><tspan font-weight="700" fill="#4338ca">PK</tspan>  _id : ObjectId</text>
+      <text x="14" y="98"><tspan font-weight="700" fill="#0f9d8a">UQ</tspan>  jti : String  (id del JWT)</text>
+      <text x="14" y="124"><tspan font-weight="700" fill="#d23c3c">FK</tspan>  usuario : ObjectId → Usuario</text>
+      <text x="14" y="150">expiraEn : Date  (índice TTL)</text>
+    </g>
+  </g>
+
+  <!-- Relación Usuario 1 — N Producto -->
+  <g stroke="#1b2236" stroke-width="2" fill="none">
+    <line x1="370" y1="245" x2="730" y2="245"/>
+    <!-- uno y solo uno (lado usuario) -->
+    <line x1="388" y1="233" x2="388" y2="257"/>
+    <line x1="398" y1="233" x2="398" y2="257"/>
+    <!-- cero o muchos (lado producto) -->
+    <line x1="730" y1="245" x2="710" y2="233"/>
+    <line x1="730" y1="245" x2="710" y2="257"/>
+    <circle cx="698" cy="245" r="7" fill="#fff"/>
+  </g>
+  <rect x="470" y="210" width="160" height="26" rx="13" fill="#eef0ff"/>
+  <text x="550" y="228" text-anchor="middle" font-size="14" font-weight="700" fill="#4338ca">registra</text>
+  <text x="550" y="272" text-anchor="middle" font-size="13" fill="#5b6478">1 usuario : 0..N productos</text>
+
+  <!-- Relación Usuario 1 — N TokenRevocado -->
+  <g stroke="#1b2236" stroke-width="2" fill="none">
+    <line x1="205" y1="380" x2="205" y2="450"/>
+    <line x1="193" y1="396" x2="217" y2="396"/>
+    <line x1="193" y1="404" x2="217" y2="404"/>
+    <line x1="205" y1="450" x2="193" y2="432"/>
+    <line x1="205" y1="450" x2="217" y2="432"/>
+    <circle cx="205" cy="422" r="7" fill="#fff"/>
+  </g>
+  <text x="228" y="420" font-size="14" font-weight="700" fill="#b7791f">cierra sesión</text>
+  <text x="228" y="438" font-size="13" fill="#5b6478">1 : 0..N tokens</text>
+
+  <!-- Notas -->
+  <g transform="translate(430,470)">
+    <rect width="630" height="140" rx="10" fill="#f8f9fc" stroke="#e2e6ef"/>
+    <text x="16" y="28" font-size="14" font-weight="700" fill="#1b2236">Reglas de negocio</text>
+    <g font-size="13" fill="#1b2236">
+      <text x="16" y="52">• Solo el usuario que registró un producto (creadoPor) o un admin pueden editarlo o eliminarlo.</text>
+      <text x="16" y="74">• Cualquier usuario autenticado puede consultar todos los productos.</text>
+      <text x="16" y="96">• Al cerrar sesión se guarda el jti del token; MongoDB lo borra solo al expirar (TTL).</text>
+      <text x="16" y="118">• Índices: correo y sku únicos; creadoPor y (categoria, createdAt) para consultas.</text>
+    </g>
+  </g>
+</svg>
