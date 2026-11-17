@@ -4,6 +4,10 @@ Aplicación web para gestionar productos (alta, consulta, edición y baja) con r
 
 Actividad 4 de *Desarrollo Full Stack* (Universidad Tecmilenio).
 
+**Aplicación en línea:** https://gestion-productos-two.vercel.app
+
+[![CI/CD](https://github.com/Slenderlll/gestion-productos/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Slenderlll/gestion-productos/actions/workflows/ci-cd.yml)
+
 - **Backend:** Node.js 22, Express 5, MongoDB con Mongoose 9, JSON Web Tokens, bcryptjs
 - **Vistas:** HTML, CSS y JavaScript sin frameworks (`/login` y `/productos`)
 - **Pruebas:** Jest + Supertest + MongoDB en memoria (135 pruebas, ~98 % de cobertura)
