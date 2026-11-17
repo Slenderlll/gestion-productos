@@ -1,4 +1,4 @@
-# Conecta la app a MongoDB Atlas sin escribir la cadena de conexión en ningún archivo:
+﻿# Conecta la app a MongoDB Atlas sin escribir la cadena de conexión en ningún archivo:
 # 1. pide la URI de Atlas (no se muestra en pantalla),
 # 2. le pone la base "gestion_productos",
 # 3. la guarda en Vercel (Production) como MONGODB_URI,
@@ -23,18 +23,27 @@ if ($uri -match '<password>|<db_password>') {
 # Misma URI pero con la base gestion_productos (no toca la base de finca-lotes)
 $uri = $uri -replace '^(mongodb(\+srv)?://[^/?]+)(/[^?]*)?', '$1/gestion_productos'
 
-Write-Host 'Guardando MONGODB_URI en Vercel (Production)...'
-$uri | npx --yes vercel@65.17.0 env add MONGODB_URI production --force
-if ($LASTEXITCODE -ne 0) { Write-Host 'No se pudo guardar en Vercel.' -ForegroundColor Red; exit 1 }
-
-Write-Host 'Creando el administrador y los productos de ejemplo en Atlas...'
+# Primero se prueba la URI creando el administrador; solo si funciona se guarda en Vercel
+Write-Host 'Probando la conexión y creando el administrador en Atlas...'
 $env:MONGODB_URI = $uri
 try {
   npm run seed
-  if ($LASTEXITCODE -ne 0) { throw 'El seed falló: revisa usuario, contraseña y que Atlas permita el acceso desde 0.0.0.0/0.' }
+  $okSeed = ($LASTEXITCODE -eq 0)
 } finally {
   Remove-Item Env:MONGODB_URI -ErrorAction SilentlyContinue
 }
+if (-not $okSeed) {
+  Write-Host ''
+  Write-Host 'No se pudo conectar. No se guardó nada en Vercel. Revisa:' -ForegroundColor Red
+  Write-Host '  - usuario y contraseña de Database Access (no los de tu cuenta de Atlas)'
+  Write-Host '  - si la contraseña tiene @ : / ? # % debe ir codificada; mejor usa una solo con letras y números'
+  Write-Host '  - Network Access debe permitir 0.0.0.0/0'
+  exit 1
+}
+
+Write-Host 'Guardando MONGODB_URI en Vercel (Production)...'
+$uri | npx --yes vercel@65.17.0 env add MONGODB_URI --environment=production --force
+if ($LASTEXITCODE -ne 0) { Write-Host 'No se pudo guardar en Vercel.' -ForegroundColor Red; exit 1 }
 
 Write-Host ''
 Write-Host 'Listo. La contraseña del administrador está en ADMIN_PASSWORD de tu archivo .env.' -ForegroundColor Green
